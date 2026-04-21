@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}{{ item[1] }} — Lost & Found{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="container">
+
+    <div style="margin-bottom:1.5rem">
+      <a href="/dashboard" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
+    </div>
+
+    <div class="detail-grid">
+
+      <!-- Image Column -->
+      <div>
+        <div class="detail-img-wrap">
+          {% if item[6] %}
+            <img class="detail-img" src="/static/uploads/{{ item[6] }}" alt="{{ item[1] }}">
+          {% else %}
+            <div class="detail-img-placeholder">
+              {% if item[5] == 'Mobile' %}📱
+              {% elif item[5] == 'Wallet' %}👛
+              {% elif item[5] == 'Keys' %}🔑
+              {% elif item[5] == 'Bag' %}🎒
+              {% elif item[5] == 'ID Card' %}🪪
+              {% else %}📦{% endif %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Info Column -->
+      <div class="detail-info">
+
+        <div class="item-detail-badges" style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <span class="badge badge-{{ item[4]|lower }}">{{ item[4] }}</span>
+          <span class="badge badge-{{ (item[8] or 'active')|lower }}">{{ item[8] or 'Active' }}</span>
+          {% if item[5] %}<span class="badge badge-active" style="background:rgba(6,182,212,.1);color:var(--accent-cyan-light);border-color:rgba(6,182,212,.3)">{{ item[5] }}</span>{% endif %}
+        </div>
+
+        <h1 class="detail-name">{{ item[1] }}</h1>
+
+        <div class="detail-field">
+          <div class="detail-field-label">📝 Description</div>
+          <div class="detail-field-value">{{ item[2] or 'No description provided.' }}</div>
+        </div>
+
+        <div class="detail-field">
+          <div class="detail-field-label">📍 Location</div>
+          <div class="detail-field-value">{{ item[3] or '—' }}</div>
+        </div>
+
+        <div class="detail-field">
+          <div class="detail-field-label">🏷️ Category</div>
+          <div class="detail-field-value">{{ item[5] or '—' }}</div>
+        </div>
+
+        <div class="detail-field">
+          <div class="detail-field-label">👤 Reported By</div>
+          <div class="detail-field-value">{{ item[7] }}</div>
+        </div>
+
+        <!-- Owner Actions -->
+        {% if session.get('user') == item[7] %}
+        <div class="detail-actions">
+          <div class="detail-field-label">⚙️ Manage This Item</div>
+          <div class="owner-actions">
+
+            <a href="/edit/{{ item[0] }}" class="btn btn-secondary btn-sm" id="edit-btn-{{ item[0] }}">
+              ✏️ Edit
+            </a>
+
+            <form method="POST" action="/resolve/{{ item[0] }}" style="display:inline" id="resolve-form-{{ item[0] }}">
+              <button type="submit" class="btn btn-success btn-sm" id="resolve-btn-{{ item[0] }}">
+                {% if item[8] == 'Resolved' %}🔄 Reopen{% else %}✅ Mark Resolved{% endif %}
+              </button>
+            </form>
+
+            <form method="POST" action="/delete/{{ item[0] }}"
+                  style="display:inline"
+                  onsubmit="return confirm('Are you sure you want to delete this item? This cannot be undone.')"
+                  id="delete-form-{{ item[0] }}">
+              <button type="submit" class="btn btn-danger btn-sm" id="delete-btn-{{ item[0] }}">
+                🗑️ Delete
+              </button>
+            </form>
+
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

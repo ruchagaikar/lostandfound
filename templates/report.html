@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Report Item — Lost & Found{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="container" style="max-width:720px">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">📋 Report Item</h1>
+        <p class="page-subtitle">Fill in the details to report a lost or found item</p>
+      </div>
+      <a href="/dashboard" class="btn btn-secondary">← Back</a>
+    </div>
+
+    <div class="card" style="padding:2rem">
+      <form method="POST" enctype="multipart/form-data" id="report-form">
+
+        <!-- Item Name -->
+        <div class="form-group">
+          <label class="form-label" for="name">Item Name *</label>
+          <input id="name" class="form-input" type="text" name="name"
+                 placeholder="e.g. Blue Backpack, Student ID Card…" required>
+        </div>
+
+        <!-- Type & Category -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="type">Type *</label>
+            <select id="type" class="form-select" name="type" required>
+              <option value="" disabled selected>Select type…</option>
+              <option value="Lost">🔴 Lost</option>
+              <option value="Found">🟢 Found</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="category">Category</label>
+            <select id="category" class="form-select" name="category">
+              <option value="">Select category…</option>
+              <option value="ID Card">🪪 ID Card</option>
+              <option value="Mobile">📱 Mobile</option>
+              <option value="Wallet">👛 Wallet</option>
+              <option value="Keys">🔑 Keys</option>
+              <option value="Bag">🎒 Bag</option>
+              <option value="Other">📦 Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-group">
+          <label class="form-label" for="location">Location Found/Lost *</label>
+          <input id="location" class="form-input" type="text" name="location"
+                 placeholder="e.g. Main Library, Block A Cafeteria…" required>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label" for="description">Description</label>
+          <textarea id="description" class="form-textarea" name="description"
+                    placeholder="Describe the item — colour, brand, any distinctive features…"></textarea>
+        </div>
+
+        <!-- Image Upload -->
+        <div class="form-group">
+          <label class="form-label">Photo (optional)</label>
+          <div class="upload-area" id="upload-area">
+            <input type="file" name="image" id="image-input"
+                   accept=".png,.jpg,.jpeg,.gif,.webp">
+            <span class="upload-icon">📷</span>
+            <div class="upload-text">Click or drag & drop an image here</div>
+            <div class="upload-hint">PNG, JPG, GIF, WEBP · Max 5 MB</div>
+          </div>
+          <div id="img-preview">
+            <img id="preview-img" src="" alt="Preview">
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary" id="submit-btn">✅ Submit Report</button>
+          <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const input   = document.getElementById('image-input');
+  const preview = document.getElementById('img-preview');
+  const img     = document.getElementById('preview-img');
+  const area    = document.getElementById('upload-area');
+
+  input.addEventListener('change', () => {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        img.src = e.target.result;
+        preview.style.display = 'block';
+        area.style.borderColor = 'var(--accent)';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  });
+</script>
+{% endblock %}

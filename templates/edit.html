@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Edit Item — Lost & Found{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="container" style="max-width:720px">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">✏️ Edit Item</h1>
+        <p class="page-subtitle">Update the details for <strong>{{ item[1] }}</strong></p>
+      </div>
+      <a href="/view/{{ item[0] }}" class="btn btn-secondary">← Cancel</a>
+    </div>
+
+    <div class="card" style="padding:2rem">
+      <form method="POST" enctype="multipart/form-data" id="edit-form">
+
+        <!-- Item Name -->
+        <div class="form-group">
+          <label class="form-label" for="name">Item Name *</label>
+          <input id="name" class="form-input" type="text" name="name"
+                 value="{{ item[1] }}" required>
+        </div>
+
+        <!-- Type & Category -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="type">Type *</label>
+            <select id="type" class="form-select" name="type" required>
+              <option value="Lost"  {% if item[4] == 'Lost'  %}selected{% endif %}>🔴 Lost</option>
+              <option value="Found" {% if item[4] == 'Found' %}selected{% endif %}>🟢 Found</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="category">Category</label>
+            <select id="category" class="form-select" name="category">
+              {% for cat in ['ID Card','Mobile','Wallet','Keys','Bag','Other'] %}
+              <option value="{{ cat }}" {% if item[5] == cat %}selected{% endif %}>{{ cat }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-group">
+          <label class="form-label" for="location">Location *</label>
+          <input id="location" class="form-input" type="text" name="location"
+                 value="{{ item[3] }}" required>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label" for="description">Description</label>
+          <textarea id="description" class="form-textarea" name="description"
+                    placeholder="Describe the item…">{{ item[2] or '' }}</textarea>
+        </div>
+
+        <!-- Image Upload -->
+        <div class="form-group">
+          <label class="form-label">Replace Photo (optional)</label>
+          {% if item[6] %}
+          <div style="margin-bottom:.75rem">
+            <img src="/static/uploads/{{ item[6] }}" alt="Current"
+                 style="max-height:140px;border-radius:var(--radius-md);border:1px solid var(--glass-border);object-fit:cover">
+            <p class="form-hint">Upload a new image to replace the current one.</p>
+          </div>
+          {% endif %}
+          <div class="upload-area" id="upload-area">
+            <input type="file" name="image" id="image-input"
+                   accept=".png,.jpg,.jpeg,.gif,.webp">
+            <span class="upload-icon">📷</span>
+            <div class="upload-text">Click or drag a new image here</div>
+            <div class="upload-hint">PNG, JPG, GIF, WEBP · Max 5 MB</div>
+          </div>
+          <div id="img-preview">
+            <img id="preview-img" src="" alt="New Preview">
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary" id="save-btn">💾 Save Changes</button>
+          <a href="/view/{{ item[0] }}" class="btn btn-secondary">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const input   = document.getElementById('image-input');
+  const preview = document.getElementById('img-preview');
+  const img     = document.getElementById('preview-img');
+  const area    = document.getElementById('upload-area');
+
+  input.addEventListener('change', () => {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        img.src = e.target.result;
+        preview.style.display = 'block';
+        area.style.borderColor = 'var(--accent)';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  });
+</script>
+{% endblock %}

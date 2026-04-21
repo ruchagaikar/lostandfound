@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lost & Found — Report and track lost or found items on campus.">
+  <title>{% block title %}Lost & Found{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- Navbar (shown only when logged in) -->
+  {% if session.get('user') %}
+  <nav class="navbar">
+    <div class="container">
+      <a href="/dashboard" class="nav-brand">
+        <span>🔍</span>
+        <span class="nav-brand-gradient">Lost & Found</span>
+      </a>
+      <div class="nav-links">
+        <a href="/dashboard" class="nav-link {% if request.path == '/dashboard' %}active{% endif %}">
+          <span>🏠</span><span>Dashboard</span>
+        </a>
+        <a href="/report" class="nav-link {% if request.path == '/report' %}active{% endif %}">
+          <span>📋</span><span>Report Item</span>
+        </a>
+        <a href="/my-items" class="nav-link {% if request.path == '/my-items' %}active{% endif %}">
+          <span>📦</span><span>My Items</span>
+        </a>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <span class="nav-user-chip">👤 <strong>{{ session['user'] }}</strong></span>
+        <a href="/logout" class="btn btn-secondary btn-sm">Logout</a>
+      </div>
+    </div>
+  </nav>
+  {% endif %}
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        {% if category == 'success' %}
+          <div class="flash flash-success">✅ {{ message }}</div>
+        {% elif category == 'error' %}
+          <div class="flash flash-error">❌ {{ message }}</div>
+        {% elif category == 'info' %}
+          <div class="flash flash-info">ℹ️ {{ message }}</div>
+        {% else %}
+          <div class="flash flash-warning">⚠️ {{ message }}</div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Page Content -->
+  {% block content %}{% endblock %}
+
+</body>
+</html>

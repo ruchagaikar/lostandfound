@@ -1,0 +1,28 @@
+# Environment secrets
+.env
+
+# Database
+database.db
+
+# Uploaded user files
+static/uploads/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

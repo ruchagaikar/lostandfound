@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}403 — Access Denied{% endblock %}
+
+{% block content %}
+<div class="error-page">
+  <div>
+    <div class="error-code">403</div>
+    <h1 class="error-title">Access Denied</h1>
+    <p class="error-desc">You don't have permission to perform this action. Only the item owner can edit or delete it.</p>
+    <a href="/dashboard" class="btn btn-primary" id="go-home-403-btn">🏠 Go to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

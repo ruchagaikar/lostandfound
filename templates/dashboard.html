@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Lost & Found{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">📋 Dashboard</h1>
+        <p class="page-subtitle">Browse all reported lost and found items</p>
+      </div>
+      <a href="/report" class="btn btn-primary" id="report-btn">+ Report Item</a>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-card stat-lost">
+        <div class="stat-value">{{ total_lost }}</div>
+        <div class="stat-label">Lost Items</div>
+      </div>
+      <div class="stat-card stat-found">
+        <div class="stat-value">{{ total_found }}</div>
+        <div class="stat-label">Found Items</div>
+      </div>
+      <div class="stat-card stat-resolved">
+        <div class="stat-value">{{ resolved }}</div>
+        <div class="stat-label">Resolved</div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <form method="GET" action="/dashboard" id="filter-form">
+      <div class="filter-bar">
+        <div class="filter-group" style="flex:2;min-width:200px">
+          <label class="filter-label">🔎 Search</label>
+          <input class="form-input" type="text" name="search"
+                 placeholder="Search by name or description…"
+                 value="{{ search }}">
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">📂 Type</label>
+          <select class="form-select" name="type" id="filter-type">
+            <option value="">All Types</option>
+            <option value="Lost"  {% if filter_type == 'Lost'  %}selected{% endif %}>Lost</option>
+            <option value="Found" {% if filter_type == 'Found' %}selected{% endif %}>Found</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">🏷️ Category</label>
+          <select class="form-select" name="category" id="filter-category">
+            <option value="">All Categories</option>
+            {% for cat in ['ID Card','Mobile','Wallet','Keys','Bag','Other'] %}
+            <option value="{{ cat }}" {% if filter_category == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">📍 Location</label>
+          <input class="form-input" type="text" name="location"
+                 placeholder="e.g. Library…" value="{{ filter_location }}">
+        </div>
+
+        <div class="filter-actions">
+          <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
+          {% if search or filter_type or filter_category or filter_location %}
+          <a href="/dashboard" class="btn btn-secondary" id="clear-btn">Clear</a>
+          {% endif %}
+        </div>
+      </div>
+    </form>
+
+    <!-- Items Grid -->
+    {% if items %}
+    <div class="item-grid" id="items-grid">
+      {% for item in items %}
+      <div class="item-card" id="item-{{ item[0] }}">
+
+        {% if item[6] %}
+          <img class="item-card-img"
+               src="/static/uploads/{{ item[6] }}"
+               alt="{{ item[1] }}"
+               loading="lazy">
+        {% else %}
+          <div class="item-card-img-placeholder">
+            {% if item[5] == 'Mobile' %}📱
+            {% elif item[5] == 'Wallet' %}👛
+            {% elif item[5] == 'Keys' %}🔑
+            {% elif item[5] == 'Bag' %}🎒
+            {% elif item[5] == 'ID Card' %}🪪
+            {% else %}📦{% endif %}
+          </div>
+        {% endif %}
+
+        <div class="item-card-body">
+          <div class="item-card-badges">
+            <span class="badge badge-{{ item[4]|lower }}">{{ item[4] }}</span>
+            <span class="badge badge-{{ item[8]|lower if item[8] else 'active' }}">
+              {{ item[8] if item[8] else 'Active' }}
+            </span>
+          </div>
+          <div class="item-card-name">{{ item[1] }}</div>
+          <div class="item-card-desc">{{ item[2] or 'No description provided.' }}</div>
+          <div class="item-card-footer">
+            <span class="item-card-location">📍 {{ item[3] or '—' }}</span>
+            <span>{{ item[5] or '—' }}</span>
+          </div>
+          <div style="margin-top:.875rem">
+            <a href="/view/{{ item[0] }}" class="btn btn-secondary btn-sm" id="view-{{ item[0] }}">View Details →</a>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state" id="empty-state">
+      <span class="empty-icon">🔍</span>
+      <div class="empty-title">No items found</div>
+      <div class="empty-desc">
+        {% if search or filter_type or filter_category or filter_location %}
+          Try adjusting your search filters.
+        {% else %}
+          Be the first to report a lost or found item!
+        {% endif %}
+      </div>
+      <a href="/report" class="btn btn-primary">Report an Item</a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

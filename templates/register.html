@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Register — Lost & Found{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-brand">
+      <span class="auth-brand-icon">✨</span>
+      <h1>Create Account</h1>
+      <p>Join the Lost & Found community</p>
+    </div>
+
+    <form method="POST" id="register-form">
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input id="username" class="form-input" type="text" name="username"
+               placeholder="Choose a username (min 3 chars)" autocomplete="username" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input id="password" class="form-input" type="password" name="password"
+               placeholder="Create a password (min 6 chars)" autocomplete="new-password" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="confirm_password">Confirm Password</label>
+        <input id="confirm_password" class="form-input" type="password" name="confirm_password"
+               placeholder="Re-enter your password" autocomplete="new-password" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full" id="register-btn">
+        🚀 Create Account
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a href="/">Sign in →</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

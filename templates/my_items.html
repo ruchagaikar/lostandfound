@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}My Items — Lost & Found{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="container">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">📦 My Items</h1>
+        <p class="page-subtitle">All items reported by <strong>{{ session['user'] }}</strong></p>
+      </div>
+      <a href="/report" class="btn btn-primary">+ Report New Item</a>
+    </div>
+
+    {% if items %}
+    <div class="items-table-wrap">
+      <table class="items-table" id="my-items-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr id="my-item-{{ item[0] }}">
+            <td>
+              <div style="display:flex;align-items:center;gap:.75rem">
+                {% if item[6] %}
+                  <img src="/static/uploads/{{ item[6] }}" alt="{{ item[1] }}"
+                       style="width:44px;height:44px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--glass-border);flex-shrink:0">
+                {% else %}
+                  <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-sm);font-size:1.25rem;flex-shrink:0">
+                    {% if item[5] == 'Mobile' %}📱
+                    {% elif item[5] == 'Wallet' %}👛
+                    {% elif item[5] == 'Keys' %}🔑
+                    {% elif item[5] == 'Bag' %}🎒
+                    {% elif item[5] == 'ID Card' %}🪪
+                    {% else %}📦{% endif %}
+                  </div>
+                {% endif %}
+                <span style="font-weight:600;color:var(--text-primary)">{{ item[1] }}</span>
+              </div>
+            </td>
+            <td><span class="badge badge-{{ item[4]|lower }}">{{ item[4] }}</span></td>
+            <td style="color:var(--text-secondary)">{{ item[5] or '—' }}</td>
+            <td style="color:var(--text-secondary)">{{ item[3] or '—' }}</td>
+            <td>
+              <span class="badge badge-{{ (item[8] or 'active')|lower }}">
+                {{ item[8] or 'Active' }}
+              </span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <a href="/view/{{ item[0] }}" class="btn btn-secondary btn-sm" id="view-my-{{ item[0] }}">View</a>
+                <a href="/edit/{{ item[0] }}" class="btn btn-secondary btn-sm" id="edit-my-{{ item[0] }}">Edit</a>
+                <form method="POST" action="/delete/{{ item[0] }}"
+                      onsubmit="return confirm('Delete this item permanently?')"
+                      style="display:inline" id="del-form-{{ item[0] }}">
+                  <button type="submit" class="btn btn-danger btn-sm" id="del-btn-{{ item[0] }}">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% else %}
+    <div class="empty-state" id="my-items-empty">
+      <span class="empty-icon">📭</span>
+      <div class="empty-title">No items yet</div>
+      <div class="empty-desc">You haven't reported any lost or found items yet.</div>
+      <a href="/report" class="btn btn-primary">Report Your First Item</a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
